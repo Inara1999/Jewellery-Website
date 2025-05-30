@@ -27,13 +27,17 @@ function Footer() {
 
         <div>
           <h1 className='font-bold mb-2'>Social</h1>
-          <p>facebook</p>
-          <p>insta</p>
-          <p>twitter</p>
+          <div className='flex space-x-4'>
+          <i className="fa-brands fa-facebook  text-white hover:text-yellow-500 transition duration-100" ></i>
+          <i className="fa-brands fa-twitter text-white hover:text-yellow-500 transition duration-100" ></i>
+          <i className="fa-brands fa-youtube  text-white hover:text-yellow-500 transition duration-100 "></i>
+          <i className="fa-brands fa-instagram  text-white hover:text-yellow-500 transition duration-100"></i>
+          </div>
         </div>
 
         <div className='mt-4'>
-          <button className='flex justify-between items-center border border-white rounded-full w-[110px] h-9 text-left text-[12px] px-2 font-normal'>
+          <button 
+           onClick={() => window.scrollTo({top:0, behavior:'smooth'})}className='flex justify-between items-center border border-white rounded-full w-[110px] h-9 text-left text-[12px] px-2 font-normal'>
             Back to top <i className="fa-solid fa-arrow-up ml-2" style={{ color: "#ffffff" }}></i>
           </button>
         </div>

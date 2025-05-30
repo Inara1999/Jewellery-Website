@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {NavLink} from 'react-router-dom'
+import {NavLink, Link} from 'react-router-dom'
 import {navbar} from '../utilis/tailwind/style.js'
 
 function Header() {
@@ -42,8 +42,8 @@ function Header() {
             {showDropdown && (
               <div className='absolute top-6 left-0 bg-black/85 border rounded shadow-md w-40 z-10'>
                 <ul className='flex flex-col'>
-                  <li className="px-4 py-2 text-white hover:bg-gray-700 cursor-pointer">Orders</li>
-                  <li className="px-4 py-2 text-white hover:bg-gray-700 cursor-pointer">Account Details</li>
+                  <Link to="my-account?signup=true" className="px-4 py-2 text-white hover:bg-gray-700 cursor-pointer">Orders</Link>
+                  <Link to="my-account?signup=true" className="px-4 py-2 text-white hover:bg-gray-700 cursor-pointer">Account Details</Link>
                 </ul>
               </div>
             )}

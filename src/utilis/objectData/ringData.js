@@ -9,8 +9,8 @@ export const ringData=[
     },
     {
         id: 2,
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIn6ds2nPPIxvS-N8c1QFD_Iaoe24y63EFXg&sA",
-        type: "Pendent",
+        image: "https://media.tiffany.com/is/image/Tiffany/EcomBrowseM/jean-schlumberger-by-tiffanysixteen-stone-ring-23429446_1041816_ED_M.jpg?defaultImage=NoImageAvailableInternal&fmt=webp",
+        type: "Rings",
         title: "Couple Silver Pendent Diamond",
         oldPrice: "$123.00",
         price: "$99.00",

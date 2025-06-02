@@ -1,4 +1,4 @@
-export const necklaceData=[
+export const PendentData=[
     {
         id: 1,
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8uFfBzfWFvUVZErPD2DohEemrrxC0nBKqNQ&s",

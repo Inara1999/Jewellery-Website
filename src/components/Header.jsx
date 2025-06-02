@@ -26,7 +26,7 @@ function Header() {
           <NavLink to='/store' className={navbar.navLink}>Store</NavLink>
           <NavLink to='/earrings' className={navbar.navLink}>Earrings</NavLink>
           <NavLink to='/rings' className={navbar.navLink}>Rings</NavLink>
-          <NavLink to='/necklace' className={navbar.navLink}>Necklace</NavLink>
+          <NavLink to='/pendent' className={navbar.navLink}>Pendent</NavLink>
 
           {/* ✅ Wrap this whole block to prevent flickering */}
           <div

@@ -5,9 +5,9 @@ import Aboutus from "../pages/Aboutus";
 import Store from "../pages/Store";
 import Earrings from "../pages/Earrings"
 import Rings from "../pages/Rings";
-import Necklace from "../pages/Necklace";
 import MyAccount from "../pages/MyAccount";
 import Contactus from "../pages/Contactus";
+import Pendent from "../pages/Pendent";
 
 
 function Router(){
@@ -20,7 +20,7 @@ function Router(){
 <Route path="/store" element={<Store />}/>
 <Route path="/earrings" element={<Earrings />}/>
 <Route path="/rings" element={<Rings />}/>
-<Route path="/necklace" element={<Necklace />}/>
+<Route path="/pendent" element={<Pendent />}/>
 <Route path="/my-account" element={<MyAccount/>}/>
 <Route path="/contact-us" element={<Contactus />}/>
 </Routes> 

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { necklaceData } from '../utilis/objectData/necklaceData';
+import { PendentData } from '../utilis/objectData/PendentData';
 
-function Necklace() {
+function Pendent() {
   const [popularity, setpopularity] = useState(false);
 
   return (
     <div>
-     <h1 className='font-extrabold flex justify-center items-center text-[40px] mt-[60px]'>Rings</h1>
-      <p className='font-normal flex justify-center items-center text-[18px] mt-[15px] mb-[40px]'>Home/Rings</p>
+     <h1 className='font-extrabold flex justify-center items-center text-[40px] mt-[60px]'>Pendent</h1>
+      <p className='font-normal flex justify-center items-center text-[18px] mt-[15px] mb-[40px]'>Home/Pendent</p>
      <div className='flex justify-center mb-[50px]'>
       <div className='bg-[#111111c4] w-[1100px] h-auto shadow-lg flex flex-col px-8 py-6'>
 
@@ -44,7 +44,7 @@ function Necklace() {
 
         {/* Product Cards */}
         <div className='flex flex-wrap justify-between mt-6'>
-          {necklaceData.map((item) => (
+          {PendentData.map((item) => (
             <div
               key={item.id}
               className='w-[22%] bg-transparent rounded-md p-2 cursor-pointer transition-transform duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1'
@@ -79,4 +79,4 @@ function Necklace() {
   );
 }
 
-export default Necklace;
+export default Pendent;

@@ -7,26 +7,38 @@ function Store() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedType, setSelectedType] = useState('All');
   const [priceMax, setPriceMax] = useState(null);
+  const [sortOption, setSortOption] = useState(null);
   const [filteredData, setFilteredData] = useState(storeData);
-  const mainContentRef = useRef(null);
-  const sidebarRef = useRef(null);  // Sidebar ke liye ref
 
-  // Filter logic
+  const mainContentRef = useRef(null);
+  const sidebarRef = useRef(null);
+
   useEffect(() => {
-    let filtered = storeData;
+    let filtered = [...storeData];
 
     if (selectedType !== 'All') {
-      filtered = filtered.filter((item) => item.type === selectedType);
+      filtered = filtered.filter(item => item.type === selectedType);
     }
 
     if (priceMax !== null) {
-      filtered = filtered.filter((item) => item.price <= priceMax);
+      filtered = filtered.filter(item => item.price <= priceMax);
+    }
+
+    if (sortOption === 'popularity') {
+      filtered.sort((a, b) => b.popularity - a.popularity);
+    } else if (sortOption === 'rating') {
+      filtered.sort((a, b) => b.rating - a.rating);
+    } else if (sortOption === 'latest') {
+      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    } else if (sortOption === 'lowToHigh') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sortOption === 'highToLow') {
+      filtered.sort((a, b) => b.price - a.price);
     }
 
     setFilteredData(filtered);
-  }, [selectedType, priceMax]);
+  }, [selectedType, priceMax, sortOption]);
 
-  // Sidebar close karna jab bahar click ho
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -48,12 +60,11 @@ function Store() {
   const clearFilters = () => {
     setSelectedType('All');
     setPriceMax(null);
+    setSortOption(null);
   };
 
   return (
     <div className='flex justify-center mb-[50px] relative'>
-
-      {/* Sidebar */}
       {sidebarOpen && (
         <div ref={sidebarRef}>
           <Sidebar
@@ -67,7 +78,6 @@ function Store() {
         </div>
       )}
 
-      {/* Main Content */}
       <div
         ref={mainContentRef}
         className={`bg-[#111111c4] w-[1100px] h-auto shadow-lg flex flex-col px-8 py-6 transition-all duration-300 ${
@@ -77,8 +87,6 @@ function Store() {
           filter: sidebarOpen ? 'blur(3px)' : 'none',
         }}
       >
-
-        {/* Top Bar */}
         <div className='flex items-center justify-between flex-wrap'>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -97,24 +105,23 @@ function Store() {
               className='text-[14px] text-gray-300'
               onClick={() => setPopularity(!popularity)}
             >
-              Sort by popularity <i className="fa-solid fa-angle-down text-white"></i>
+              Sort by {sortOption || 'popularity'} <i className="fa-solid fa-angle-down text-white"></i>
             </button>
 
             {popularity && (
               <div className='absolute right-0 mt-2 w-48 bg-gray-800 shadow-md z-20 border border-white rounded-md'>
                 <div className='flex flex-col'>
-                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]'>Sort by Popularity</button>
-                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]'>Sort by average rating</button>
-                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]'>Sort by latest</button>
-                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]'>Sort by price: low to high</button>
-                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]'>Sort by price: high to low</button>
+                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]' onClick={() => { setSortOption('popularity'); setPopularity(false); }}>Sort by Popularity</button>
+                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]' onClick={() => { setSortOption('rating'); setPopularity(false); }}>Sort by Average Rating</button>
+                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]' onClick={() => { setSortOption('latest'); setPopularity(false); }}>Sort by Latest</button>
+                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]' onClick={() => { setSortOption('lowToHigh'); setPopularity(false); }}>Sort by Price: Low to High</button>
+                  <button className='p-2 hover:bg-gray-700 text-left text-[12px]' onClick={() => { setSortOption('highToLow'); setPopularity(false); }}>Sort by Price: High to Low</button>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Product Cards */}
         <div className='flex flex-wrap justify-between mt-6'>
           {filteredData.map((item) => (
             <div

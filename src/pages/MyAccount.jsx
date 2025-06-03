@@ -1,98 +1,113 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { postWithoutToken } from "../api/fetch";
+import { endPoint } from "../utilis/url";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
-function MyAccount() {
-  const [isSignup, setSignup] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmpass] = useState('');
-  const [error, setError] = useState(false);
+const MyAccount = () => {
+  const [isSignup, setIsSignup] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSSubmit = (e) => {
-    e.preventDefault();
 
-    if (isSignup) {
-      if (!name.trim()) {
-        setError(true);
-        toast.error("Enter your name");
-        return;
-      } else {
-        setError(false);
-      }
-
-      if (!confirmPassword) {
-        toast.error("Enter confirm password");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        toast.error("Password didn't Match");
-        return;
-      }
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (storedToken && user?.role) {
+      navigate(user.role === "user" ? "/profile" : "/admin");
     }
+  }, []);
+
+  const validateForm = () => {
+    const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email || !password) {
-      toast.error("Kindly enter email & password");
-      return;
+      toast.error("Email and password are required");
+      return false;
     }
 
-    const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailReg.test(email)) {
-      toast.error("Enter correct email");
-      return;
+      toast.error("Invalid email format");
+      return false;
     }
 
     if (password.length < 8) {
-      toast.error("Invalid Password");
-      return;
+      toast.error("Password must be at least 8 characters");
+      return false;
     }
 
     if (isSignup) {
-      toast.success("Signup Successfully");
-    } else {
-      toast.success("Login Successfully");
+      if (!name.trim()) {
+        toast.error("Name is required");
+        return false;
+      }
     }
 
-    setEmail('');
-    setPassword('');
-    setConfirmpass('');
-    setName('');
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+      const data = isSignup ? { name, email, password } : { email, password };
+      const url = isSignup ? endPoint.register : endPoint.login;
+
+      const res = await postWithoutToken(url, data);
+      localStorage.setItem("token", res.accessToken);
+      localStorage.setItem("user", JSON.stringify(res.content));
+
+    
+      toast.success(`${isSignup ? "Signup" : "Login"} successful`);
+
+      navigate(res.content.role === "user" ? "/profile" : "/admin");
+    } catch (err) {
+      const msg = isSignup ? "Registration failed" : "Login failed";
+      setError(msg);
+      toast.error(`${msg}. Please try again.`);
+    }
   };
 
   return (
-    <div className="boder border-white">
-    <div className="min-h-screen flex flex-col justify-center items-center shadow-2xl">
-      <h1 className="font-extrabold text-[40px]">Account Details</h1>
-      <p className="text-[18px] text-white mt-2 mb-6">Home » My account</p>
+    <div className="min-h-screen flex flex-col justify-center items-center px-4">
+      <h1 className="font-extrabold text-[40px] text-white mb-1">Account Details</h1>
+      <p className="text-[18px] text-gray-300 mb-6">Home » My account</p>
 
-      <div className="bg-black w-[400px] shadow-md rounded-lg p-8 mb-5">
+      <div className="bg-[#111111c4] w-[400px] shadow-md rounded-lg p-8 mb-5">
         <h2 className="text-2xl text-white font-bold mb-1 text-center">
           {isSignup ? "Sign Up" : "Sign In"}
         </h2>
-        <p className="text-sm text-white text-center mb-4">
+        <p className="text-sm text-gray-300 text-center mb-4">
           {isSignup ? "Create an Account" : "Sign in to continue shopping"}
         </p>
 
-        <form onSubmit={handleSSubmit}>
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+        )}
+
+        <form onSubmit={handleSubmit}>
           {isSignup && (
-            <div className="mb-3">
+            <div className="mb-4">
               <label className="text-xs text-white ml-1">
                 Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                placeholder="Enter your Name"
+                placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={`border text-sm w-full rounded h-10 px-3 mt-1 ${
-                  error ? "border-red-600" : "border-white"
-                }`}
+                className="border border-white text-sm w-full rounded h-10 px-3 mt-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600"
               />
             </div>
           )}
 
-          <div className="mb-3">
+          <div className="mb-4">
             <label className="text-xs text-white ml-1">
               Email <span className="text-red-500">*</span>
             </label>
@@ -102,12 +117,12 @@ function MyAccount() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="border border-white text-sm w-full rounded h-10 px-3 mt-1"
+              className="border border-white text-sm w-full rounded h-10 px-3 mt-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600"
             />
           </div>
 
-          <div className="mb-3">
-            <label className="text-xs tex-white ml-1">
+          <div className="mb-4">
+            <label className="text-xs text-white ml-1">
               Password <span className="text-red-500">*</span>
             </label>
             <input
@@ -116,57 +131,42 @@ function MyAccount() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="border border-white text-sm w-full rounded h-10 px-3 mt-1"
+              className="border border-white text-sm w-full rounded h-10 px-3 mt-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-600"
             />
           </div>
 
-          {isSignup && (
-            <div className="mb-3">
-              <label className="text-xs text-white ml-1">
-                Confirm Password <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmpass(e.target.value)}
-                required
-                className="border border-white text-sm w-full rounded h-10 px-3 mt-1"
-              />
-            </div>
-          )}
 
           {!isSignup && (
-            <div className="flex justify-between items-center text-sm mt-2 mb-4">
-              <label className="flex items-center gap-2 text-white cursor-pointer">
+            <div className="flex justify-between items-center text-sm mt-2 mb-4 text-white">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" />
                 Remember Me
               </label>
-              <p className="text-white cursor-pointer">Forgot Password?</p>
+              <p className="cursor-pointer hover:underline">Forgot Password?</p>
             </div>
           )}
 
           <button
             type="submit"
-            className="bg-black text-white border border-yellow-600 w-[200px] h-10  rounded-full mt-2 hover:bg-yellow-600 hover:text-black justify-center flex items-center mx-auto transition-colors duration-300"
+            className="bg-[#111111c4] text-white border border-yellow-600  w-full h-10 rounded-full mt-2 hover:bg-yellow-600 hover:text-black transition-colors duration-300 flex justify-center items-center"
           >
             {isSignup ? "Sign Up" : "Sign In"}
           </button>
         </form>
 
-        <div className="text-center mt-4 text-sm text-white">
+        <p className="mt-4 text-sm text-center text-white">
           {isSignup ? "Already have an account?" : "Don't have an account?"}
           <span
-            onClick={() => setSignup(!isSignup)}
-            className="text-white font-bold ml-1 cursor-pointer"
+            onClick={() => setIsSignup(!isSignup)}
+            className="text-yellow-600 font-bold ml-1 cursor-pointer hover:underline"
           >
             {isSignup ? "Sign In" : "Sign Up"}
           </span>
-        </div>
+        </p>
       </div>
-    </div>
+      <ToastContainer />
     </div>
   );
-}
+};
 
 export default MyAccount;
